@@ -13,6 +13,7 @@ public class Sorting {
     private List<String> files = new LinkedList<>();
     private String outputFileName;
     private String outputValue;
+    private Class clazz;
 
     public Sorting(String[] args) throws SortingException, IncorrectKeyException {
         boolean isKeyPresent = false;
@@ -22,10 +23,12 @@ public class Sorting {
                     case "-i":
                         isNumber = true;
                         isKeyPresent = true;
+                        clazz = Integer.class;
                         break;
                     case "-s":
                         isNumber = false;
                         isKeyPresent = true;
+                        clazz = String.class;
                         break;
                     case "-a":
                         isDescending = false;
@@ -63,7 +66,11 @@ public class Sorting {
         return files;
     }
 
-    public void sortFiles() throws SortingException {
+    public Class getClazz() {
+        return clazz;
+    }
+
+    public <E> void sortFiles(Class<E> clazz) throws SortingException {
         try (FileOutputStream fos = new FileOutputStream(new File(outputFileName))) {
 
             List<BufferedReader> readerStreams = new LinkedList<>();
@@ -71,25 +78,17 @@ public class Sorting {
                 readerStreams.add(new BufferedReader(new FileReader(file)));
             }
 
-            Integer[] valuesInt = new Integer[readerStreams.size()];
-            String[] valuesString = new String[readerStreams.size()];
+            @SuppressWarnings("unchecked")
+            E[] values = (E[]) Array.newInstance(clazz, readerStreams.size());
 
             String value;
             for (int i = 0; i < readerStreams.size(); i++) {
                 if ((value = readerStreams.get(i).readLine()) != null) {
-                    if (isNumber) {
-                        valuesInt[i] = Integer.parseInt(value);
-                    } else {
-                        valuesString[i] = value;
-                    }
+                    values[i] = isNumber ? clazz.cast(Integer.parseInt(value)) : clazz.cast(value);
                 } else {
                     readerStreams.get(i).close();
                     readerStreams.remove(i);
-                    if (isNumber) {
-                        valuesInt = removeFromArrayByIndex(Integer.class, valuesInt, i);
-                    } else {
-                        valuesString = removeFromArrayByIndex(String.class, valuesString, i);
-                    }
+                    values = removeFromArrayByIndex(clazz, values, i);
                     i--;
                 }
             }
@@ -97,39 +96,24 @@ public class Sorting {
             while (readerStreams.size() > 0) {
                 int thread;
                 if (isNumber) {
-                    if (isDescending) {
-                        thread = sortNumDesc(valuesInt);
-                    } else {
-                        thread = sortNum(valuesInt);
-                    }
+                    thread = isDescending ? sortNumDesc((Integer[]) values) : sortNum((Integer[]) values);
                 } else {
-                    if (isDescending) {
-                        thread = sortStringDesc(valuesString);
-                    } else {
-                        thread = sortString(valuesString);
-                    }
+                    thread = isDescending ? sortStringDesc((String[]) values) : sortString((String[]) values);
                 }
-                fos.write(outputValue.getBytes());
-                fos.write(System.getProperty("line.separator").getBytes());
-                fos.flush();
+                if (!outputValue.isEmpty()) {
+                    fos.write(outputValue.getBytes());
+                    fos.write(System.getProperty("line.separator").getBytes());
+                    fos.flush();
+                }
 
                 if ((value = readerStreams.get(thread).readLine()) != null) {
-                    if (isNumber) {
-                        valuesInt[thread] = Integer.parseInt(value);
-                    } else {
-                        valuesString[thread] = value;
-                    }
+                    values[thread] = isNumber ? clazz.cast(Integer.parseInt(value)) : clazz.cast(value);
                 } else {
                     readerStreams.get(thread).close();
                     readerStreams.remove(thread);
-                    if (isNumber) {
-                        valuesInt = removeFromArrayByIndex(Integer.class, valuesInt, thread);
-                    } else {
-                        valuesString = removeFromArrayByIndex(String.class, valuesString, thread);
-                    }
+                    values = removeFromArrayByIndex(clazz, values, thread);
                 }
             }
-
         } catch (NumberFormatException ex) {
             throw new SortingException("Incorrect file format. Check is files are numeric or alphabetic");
         } catch (IOException e) {
@@ -137,9 +121,12 @@ public class Sorting {
         }
     }
 
+
     private <E> E[] removeFromArrayByIndex(Class<E> clazz, E[] array, int index) {
         if (array == null || index < 0 || index >= array.length)
             return array;
+
+        @SuppressWarnings("unchecked")
         E[] newArray = (E[]) Array.newInstance(clazz, array.length - 1);
 
         for (int i = 0, k = 0; i < array.length; i++) {

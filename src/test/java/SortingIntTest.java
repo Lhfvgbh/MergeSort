@@ -47,7 +47,7 @@ public class SortingIntTest {
     public void intFullAcsDirectTest() throws Exception {
         String[] args = {"-i", "-a", outName, int2Name, int3Name, int1Name};
         Sorting s = new Sorting(args);
-        s.sortFiles();
+        s.sortFiles(Integer.class);
         Assert.assertEquals(readFile(out_t), readFile(outName));
     }
 
@@ -55,7 +55,7 @@ public class SortingIntTest {
     public void intFullAcsTest() throws Exception {
         String[] args = {"-i", outName, int1Name, int2Name, int3Name};
         Sorting s = new Sorting(args);
-        s.sortFiles();
+        s.sortFiles(Integer.class);
         Assert.assertEquals(readFile(out_t), readFile(outName));
     }
 
@@ -63,7 +63,7 @@ public class SortingIntTest {
     public void intFullDescTest() throws Exception {
         String[] args = {"-i", "-d", outName, int6Name, int7Name, int8Name};
         Sorting s = new Sorting(args);
-        s.sortFiles();
+        s.sortFiles(Integer.class);
         List<String> list = readFile(out_t);
         Collections.reverse(list);
         Assert.assertEquals(list, readFile(outName));
@@ -73,7 +73,7 @@ public class SortingIntTest {
     public void intShortTest() throws Exception {
         String[] args = {"-i", "-a", outName, int4Name, int5Name};
         Sorting s = new Sorting(args);
-        s.sortFiles();
+        s.sortFiles(Integer.class);
         Assert.assertEquals(readFile(out_t).subList(7, 9), readFile(outName));
     }
 
@@ -81,14 +81,14 @@ public class SortingIntTest {
     public void intOneEmptySpaceTest() throws Exception {
         String[] args = {"-i", "-a", outName, empty2Name, int3Name, int2Name, int1Name};
         Sorting s = new Sorting(args);
-        s.sortFiles();
+        s.sortFiles(Integer.class);
     }
 
     @Test
     public void intOneEmptyTest() throws Exception {
         String[] args = {"-i", "-a", outName, empty1Name, int3Name, int2Name, int1Name};
         Sorting s = new Sorting(args);
-        s.sortFiles();
+        s.sortFiles(Integer.class);
         Assert.assertEquals(readFile(out_t), readFile(outName));
     }
 
@@ -96,22 +96,22 @@ public class SortingIntTest {
     public void intAllEmptySpacesTest() throws Exception {
         String[] args = {"-i", "-a", outName, empty1Name, empty2Name};
         Sorting s = new Sorting(args);
-        s.sortFiles();
+        s.sortFiles(Integer.class);
     }
 
     @Test
     public void intAllEmptyTest() throws Exception {
         String[] args = {"-i", "-a", outName, empty1Name, empty1Name};
         Sorting s = new Sorting(args);
-        s.sortFiles();
+        s.sortFiles(Integer.class);
         Assert.assertEquals(new LinkedList<>(), readFile(outName));
     }
 
-    @Test//(expected = SortingException.class)
+    @Test
     public void intOneEmptyFileTest() throws Exception {
         String[] args = {"-i", "-a", outName, empty1Name};
         Sorting s = new Sorting(args);
-        s.sortFiles();
+        s.sortFiles(Integer.class);
         Assert.assertEquals(new LinkedList<>(), readFile(outName));
     }
 
@@ -119,7 +119,7 @@ public class SortingIntTest {
     public void intOneFileTest() throws Exception {
         String[] args = {"-i", "-a", outName, int3Name};
         Sorting s = new Sorting(args);
-        s.sortFiles();
+        s.sortFiles(Integer.class);
         Assert.assertEquals(readFile(out_t).subList(2, 5), readFile(outName));
     }
 
@@ -127,6 +127,6 @@ public class SortingIntTest {
     public void mixedIntTest() throws Exception {
         String[] args = {"-i", "-a", outName, int1Name, mixedName};
         Sorting s = new Sorting(args);
-        s.sortFiles();
+        s.sortFiles(Integer.class);
     }
 }

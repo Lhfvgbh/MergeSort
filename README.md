@@ -32,6 +32,8 @@ Use the following commands to start the program (examples are run from the Merge
 * In case the output file already exist, it will be rewritten with the program execution.
 * To use more than 2 files for sorting split them with space.
 * The program won't sort one file passed as input argument, it will return the file as it is.
+* String sorting is case independent.
+* Empty strings are ignored for string sorting.
 
 The program do not guarantee the correct work in the following situations:
 * Less than 2 files are given as input parameters (one output file and one or more input files should be granted).
@@ -45,4 +47,4 @@ The program do not guarantee the correct work in the following situations:
 * Incorrect path to files
 * Both alternative keys are passed (-a and -d or -s and -i)
 
-<h6> P.S.This is a test task for CFT Java course. Please check the task at <a href="https://google.com">GoogleDrive</a></h6>
+<h6> P.S.This is a test task for CFT Java course. Please check the task at <a href="https://drive.google.com/open?id=10qhGjn7biURykP8hIcT6NJHoGX-WOHUh">GoogleDrive</a></h6>
